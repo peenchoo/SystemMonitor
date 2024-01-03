@@ -24,13 +24,29 @@ int Process::Pid()
 }
 
 // TODO: Return this process's CPU utilization
-float Process::CpuUtilization() { return 0; }
+float Process::CpuUtilization() 
+{ 
+    const int systemUpTimeSeconds = LinuxParser::UpTime();
+    const int totalTimeActiveSeconds = LinuxParser::ActiveJiffies(_pidId);
+    const int processUpTimeSeconds = LinuxParser::UpTime(_pidId);
+    
+    const int totalTimeSiceStartUp = systemUpTimeSeconds - processUpTimeSeconds;
+
+    _cpuUtilization = (1.0*totalTimeActiveSeconds)/totalTimeSiceStartUp;
+    return (_cpuUtilization);
+}
 
 // TODO: Return the command that generated this process
-string Process::Command() { return string(); }
+string Process::Command() 
+{
+    return _command; 
+}
 
 // TODO: Return this process's memory utilization
-string Process::Ram() { return string(); }
+string Process::Ram() 
+{ 
+    return LinuxParser::Ram(_pidId);
+}
 
 // TODO: Return the user (name) that generated this process
 string Process::User() { return string(); }
